@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chatwoot Reactivation Page</title>
+</head>
+<body>
+  <h2>Связь с оператором...</h2>
+  <p>Сейчас откроется чат для вас. Пожалуйста, подождите.</p>
+
+  <script>
+    // Извлекаем параметры из URL
+    const params = new URLSearchParams(window.location.search);
+    const uuid = params.get('uuid') || 'unknown';
+    const bonus_id = params.get('bonus_id') || 'none';
+    const campaign_name = params.get('campaign_name') || 'unknown';
+
+    window.chatwootSettings = {
+      websiteToken: "ВАШ_WEBSITE_TOKEN", // <--- замените на ваш токен
+      baseUrl: "https://ВАШ_CHATWOOT_URL", // <--- например, https://app.chatwoot.com или ваш self-hosted
+      customAttributes: {
+        uuid: uuid,
+        bonus_id: bonus_id,
+        campaign_name: campaign_name,
+        type: "реактивация"
+      }
+    };
+
+    (function(d,t) {
+      var BASE_URL = window.chatwootSettings.baseUrl;
+      var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+      g.src= BASE_URL + "/packs/js/sdk.js";
+      g.defer = true;
+      g.async = true;
+      s.parentNode.insertBefore(g,s);
+    })(document,"script");
+  </script>
+</body>
+</html>

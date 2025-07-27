@@ -10,20 +10,27 @@
   <p>Сейчас откроется чат для вас. Пожалуйста, подождите.</p>
 
   <script>
-    // Извлекаем параметры из URL
     const params = new URLSearchParams(window.location.search);
     const uuid = params.get('uuid') || 'unknown';
     const bonus_id = params.get('bonus_id') || 'none';
     const campaign_name = params.get('campaign_name') || 'unknown';
+    const label = params.get('label') || 'реактивация';
+    const domain = params.get('domain') || 'no-domain';
+    const last_online = params.get('last_online') || 'not_set';
+    const tz_offset = params.get('tz_offset') || '0';
 
     window.chatwootSettings = {
-      websiteToken: "ВАШ_WEBSITE_TOKEN", // <--- замените на ваш токен
-      baseUrl: "https://ВАШ_CHATWOOT_URL", // <--- например, https://app.chatwoot.com или ваш self-hosted
+      websiteToken: "JNZ9fwgTkAVY6xq8BhKPEpWr",
+      baseUrl: "https://app.chatwoot.com",
+      showPopup: true,
       customAttributes: {
         uuid: uuid,
         bonus_id: bonus_id,
         campaign_name: campaign_name,
-        type: "реактивация"
+        type: label,
+        domain: domain,
+        last_online: last_online,
+        tz_offset: tz_offset
       }
     };
 
@@ -35,6 +42,16 @@
       g.async = true;
       s.parentNode.insertBefore(g,s);
     })(document,"script");
+
+    function trySendMessage() {
+      if (window.$chatwoot) {
+        window.$chatwoot.sendMessage("Здравствуйте, хочу активировать бонус.");
+      } else {
+        setTimeout(trySendMessage, 500);
+      }
+    }
+
+    setTimeout(trySendMessage, 2000);
   </script>
 </body>
 </html>

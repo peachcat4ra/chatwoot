@@ -1,45 +1,63 @@
-<script>
-  const params = new URLSearchParams(window.location.search);
-  const customAttributes = {
-    uuid: params.get('uuid') || 'unknown',
-    bonus_id: params.get('bonus_id') || 'none',
-    campaign_name: params.get('campaign_name') || 'unknown',
-    campaign_type: params.get('campaign_type') || 'none',
-    domain: params.get('domain') || window.location.hostname,
-    last_online: params.get('last_online') || new Date().toISOString(),
-    tz_offset: new Date().getTimezoneOffset().toString()
-  };
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест Chatwoot</title>
+</head>
+<body>
 
-  window.chatwootSettings = {
-    websiteToken: "GWm8eQDaPJ7fZKaoELWMRRse", // <-- ИСПОЛЬЗУЙТЕ ЭТОТ ТОКЕН ДЛЯ ВИДЖЕТА
-    baseUrl: "https://app.chatwoot.com",
-    showPopup: true,
-    debug: true, // <-- вот эта строка включает логирование
-    customAttributes: customAttributes
-  };
+    <h1>Тестовая страница Chatwoot</h1>
+    <p>Если виджет Chatwoot здесь появится, значит, проблема не в самом коде Chatwoot, а в вашей основной странице.</p>
 
-  (function(d,t) {
-    var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
-    g.src = window.chatwootSettings.baseUrl + "/packs/js/sdk.js";
-    g.defer = true;
-    g.async = true;
-    g.onload = function() {
-      if (window.$chatwoot) {
-        console.log('✅ Chatwoot SDK загружен');
-        window.$chatwoot.run();
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const customAttributes = {
+            uuid: params.get('uuid') || 'unknown',
+            bonus_id: params.get('bonus_id') || 'none',
+            campaign_name: params.get('campaign_name') || 'unknown',
+            campaign_type: params.get('campaign_type') || 'none',
+            domain: params.get('domain') || window.location.hostname,
+            last_online: params.get('last_online') || new Date().toISOString(),
+            tz_offset: new Date().getTimezoneOffset().toString()
+        };
 
-        setTimeout(() => {
-          try {
-            window.$chatwoot.toggle('open');
-            window.$chatwoot.sendMessage("Здравствуйте, хочу активировать бонус.");
-          } catch (err) {
-            console.error("Ошибка отправки:", err);
-          }
-        }, 2000);
-      } else {
-        console.warn("⚠️ Chatwoot SDK не инициализировался");
-      }
-    };
-    s.parentNode.insertBefore(g,s);
-  })(document,"script");
-</script>
+        window.chatwootSettings = {
+            websiteToken: "GWm8eQDaPJ7fZKaoELWMRRse", // <-- Убедитесь, что это ваш реальный токен!
+            baseUrl: "https://app.chatwoot.com",
+            showPopup: true,
+            debug: true, // Включен для отладки
+            customAttributes: customAttributes
+        };
+
+        (function(d, t) {
+            var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
+            g.src = window.chatwootSettings.baseUrl + "/packs/js/sdk.js";
+            g.defer = true;
+            g.async = true;
+            g.onload = function() {
+                // Добавляем небольшую задержку, чтобы дать Chatwoot время на полную инициализацию
+                setTimeout(function() {
+                    if (window.$chatwoot) {
+                        console.log('✅ Chatwoot SDK загружен и доступен');
+                        window.$chatwoot.run();
+
+                        setTimeout(() => {
+                            try {
+                                window.$chatwoot.toggle('open');
+                                window.$chatwoot.sendMessage("Здравствуйте, хочу активировать бонус.");
+                            } catch (err) {
+                                console.error("Ошибка отправки сообщения Chatwoot:", err);
+                            }
+                        }, 500); // Задержка для открытия и отправки сообщения
+
+                    } else {
+                        console.warn("⚠️ Chatwoot SDK не инициализировался после задержки");
+                    }
+                }, 100); // Небольшая задержка, 100 мс
+            };
+            s.parentNode.insertBefore(g, s);
+        })(document, "script");
+    </script>
+    </body>
+</html>

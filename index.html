@@ -1,61 +1,45 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <title>Chatwoot Reactivation</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-  <h2>Связь с оператором...</h2>
-  <p>Сейчас откроется чат. Пожалуйста, подождите.</p>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const customAttributes = {
+    uuid: params.get('uuid') || 'unknown',
+    bonus_id: params.get('bonus_id') || 'none',
+    campaign_name: params.get('campaign_name') || 'unknown',
+    campaign_type: params.get('campaign_type') || 'none',
+    domain: params.get('domain') || window.location.hostname,
+    last_online: params.get('last_online') || new Date().toISOString(),
+    tz_offset: new Date().getTimezoneOffset().toString()
+  };
 
-  <script>
-    // Чтение параметров из URL
-    const params = new URLSearchParams(window.location.search);
-    const customAttributes = {
-      uuid: params.get('uuid') || 'unknown',
-      bonus_id: params.get('bonus_id') || 'none',
-      campaign_name: params.get('campaign_name') || 'unknown',
-      campaign_type: params.get('campaign_type') || 'none',
-      domain: params.get('domain') || window.location.hostname,
-      last_online: params.get('last_online') || new Date().toISOString(),
-      tz_offset: new Date().getTimezoneOffset().toString()
+  window.chatwootSettings = {
+    websiteToken: "GWm8eQDaPJ7fZKaoELWMRRse",  // ← твой актуальный токен
+    baseUrl: "https://app.chatwoot.com",
+    showPopup: true,
+    debug: true,  // ← вот эта строка включает логирование
+    customAttributes: customAttributes
+  };
+
+  (function(d,t) {
+    var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
+    g.src = window.chatwootSettings.baseUrl + "/packs/js/sdk.js";
+    g.defer = true;
+    g.async = true;
+    g.onload = function() {
+      if (window.$chatwoot) {
+        console.log('✅ Chatwoot SDK загружен');
+        window.$chatwoot.run();
+
+        setTimeout(() => {
+          try {
+            window.$chatwoot.toggle('open');
+            window.$chatwoot.sendMessage("Здравствуйте, хочу активировать бонус.");
+          } catch (err) {
+            console.error("Ошибка отправки:", err);
+          }
+        }, 2000);
+      } else {
+        console.warn("⚠️ Chatwoot SDK не инициализировался");
+      }
     };
-
-    // Настройки Chatwoot
-    window.chatwootSettings = {
-      websiteToken: "GWm8eQDaPJ7fZKaoELWMRRse",
-      baseUrl: "https://app.chatwoot.com",
-      showPopup: true,
-      customAttributes: customAttributes
-    };
-
-    // Загрузка SDK и запуск Chatwoot
-    (function(d,t) {
-      const g = d.createElement(t), s = d.getElementsByTagName(t)[0];
-      g.src = window.chatwootSettings.baseUrl + "/packs/js/sdk.js";
-      g.defer = true;
-      g.async = true;
-      g.onload = function() {
-        if (window.$chatwoot) {
-          console.log("Chatwoot SDK загружен");
-          window.$chatwoot.run();
-
-          setTimeout(() => {
-            try {
-              window.$chatwoot.toggle("open");
-              window.$chatwoot.sendMessage("Здравствуйте, хочу активировать бонус.");
-              console.log("Сообщение отправлено");
-            } catch (err) {
-              console.error("Ошибка отправки сообщения:", err);
-            }
-          }, 2000);
-        } else {
-          console.warn("Chatwoot SDK не инициализировался");
-        }
-      };
-      s.parentNode.insertBefore(g,s);
-    })(document,"script");
-  </script>
-</body>
-</html>
+    s.parentNode.insertBefore(g,s);
+  })(document,"script");
+</script>

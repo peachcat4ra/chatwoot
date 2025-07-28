@@ -10,6 +10,7 @@
   <p>Сейчас откроется чат. Пожалуйста, подождите.</p>
 
   <script>
+    // Чтение параметров из URL
     const params = new URLSearchParams(window.location.search);
     const customAttributes = {
       uuid: params.get('uuid') || 'unknown',
@@ -21,35 +22,36 @@
       tz_offset: new Date().getTimezoneOffset().toString()
     };
 
+    // Настройки Chatwoot
     window.chatwootSettings = {
-      websiteToken: "GWm8eQDaPJ7fZKaoELWMRRse", // ОБНОВЛЕНО: новый токен для вашего Website channel
-      baseUrl: "https://app.chatwoot.com",      // публичный хост
+      websiteToken: "GWm8eQDaPJ7fZKaoELWMRRse",
+      baseUrl: "https://app.chatwoot.com",
       showPopup: true,
       customAttributes: customAttributes
     };
 
+    // Загрузка SDK и запуск Chatwoot
     (function(d,t) {
-      var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
+      const g = d.createElement(t), s = d.getElementsByTagName(t)[0];
       g.src = window.chatwootSettings.baseUrl + "/packs/js/sdk.js";
       g.defer = true;
       g.async = true;
       g.onload = function() {
         if (window.$chatwoot) {
-          console.log('Chatwoot SDK loaded.');
+          console.log("Chatwoot SDK загружен");
           window.$chatwoot.run();
 
-          // Пробуем открыть чат и отправить сообщение
           setTimeout(() => {
             try {
-              window.$chatwoot.toggle('open');
+              window.$chatwoot.toggle("open");
               window.$chatwoot.sendMessage("Здравствуйте, хочу активировать бонус.");
-              console.log("Сообщение отправлено.");
+              console.log("Сообщение отправлено");
             } catch (err) {
-              console.error("Ошибка отправки:", err);
+              console.error("Ошибка отправки сообщения:", err);
             }
           }, 2000);
         } else {
-          console.warn("Chatwoot SDK не инициализировался.");
+          console.warn("Chatwoot SDK не инициализировался");
         }
       };
       s.parentNode.insertBefore(g,s);

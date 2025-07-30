@@ -1,21 +1,94 @@
-<script>
-  (function(d,t) {
-    var BASE_URL="https://app.chatwoot.com";
-    var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-    g.src=BASE_URL+"/packs/js/sdk.js";
-    g.async = true;
-    s.parentNode.insertBefore(g,s);
-    g.onload=function(){
-      // ИСПРАВЛЕНИЕ: Используем $chatwoot вместо chatwootSDK
-      if (window.$chatwoot) { // Добавлена проверка на наличие объекта $chatwoot
-        window.$chatwoot.run({
-          websiteToken: 'i5ffjnTWc9nAFHoCx8UanKEu', // Убедитесь, что это ваш АКТУАЛЬНЫЙ токен
-          baseUrl: BASE_URL
-        });
-        console.log('✅ Chatwoot SDK загружен и запущен на новом сайте.');
-      } else {
-        console.warn('⚠️ Chatwoot SDK не инициализировался на новом сайте. Проверьте websiteToken и наличие $chatwoot.');
-      }
-    }
-  })(document,"script");
-</script>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Базовый Тест Chatwoot с Дефолтным Кодом</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.1em;
+            color: #666;
+        }
+        .note {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #888;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Тестовая страница Chatwoot</h1>
+        <p>Этот сайт содержит базовый HTML и стандартный код Chatwoot.</p>
+        <p>Если виджет Chatwoot работает правильно, вы увидите его в правом нижнем углу экрана.</p>
+        <div class="note">
+            <p>Примечание: Убедитесь, что ваш websiteToken (<code>'i5ffjnTWc9nAFHoCx8UanKEu'</code>) актуален и верен.</p>
+            <p>Очистите кеш браузера (Ctrl+Shift+Del) или откройте страницу в режиме инкогнито, чтобы увидеть изменения.</p>
+            <p>Проверьте консоль разработчика (F12) на наличие сообщений.</p>
+        </div>
+    </div>
+
+    <script>
+      // Важно: chatwootSettings должен быть определен до загрузки SDK
+      window.chatwootSettings = {
+        websiteToken: 'i5ffjnTWc9nAFHoCx8UanKEu', // <--- УБЕДИТЕСЬ, ЧТО ЭТО ВАШ АКТУАЛЬНЫЙ ТОКЕН!
+        baseUrl: "https://app.chatwoot.com",
+        showPopup: true, // Раскомментируйте, если хотите, чтобы виджет автоматически открывался
+        debug: true // Раскомментируйте для включения отладки (рекомендуется для тестов)
+      };
+
+      (function(d,t) {
+        var BASE_URL = window.chatwootSettings.baseUrl; // Берем baseUrl из настроек
+        var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+        g.src=BASE_URL+"/packs/js/sdk.js";
+        g.async = true; // Загружать асинхронно
+        s.parentNode.insertBefore(g,s);
+        g.onload=function(){
+          // После загрузки SDK, Chatwoot автоматически использует window.chatwootSettings
+          // и инициализирует window.$chatwoot
+          if (window.$chatwoot) {
+            console.log('✅ Chatwoot SDK загружен и доступен (дефолтный метод).');
+            // Если showPopup: true, виджет должен открыться сам.
+            // Здесь можно добавить дополнительную логику, если она нужна после успешной инициализации.
+
+            // Пример: Отправить сообщение через небольшую задержку (если нужно)
+            // setTimeout(() => {
+            //   try {
+            //     window.$chatwoot.sendMessage("Здравствуйте, хочу активировать бонус.");
+            //   } catch (err) {
+            //     console.error("Ошибка отправки сообщения Chatwoot:", err);
+            //   }
+            // }, 500);
+
+          } else {
+            console.warn('⚠️ Chatwoot SDK не инициализировался. Проверьте websiteToken и настройки.');
+          }
+        }
+      })(document,"script");
+    </script>
+    </body>
+</html>

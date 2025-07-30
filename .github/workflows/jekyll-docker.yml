@@ -1,0 +1,50 @@
+name: Jekyll site CI # Название вашего рабочего процесса
+
+on:
+  push:
+    branches: [ "main" ] # Запускать при пуше в ветку 'main'
+  pull_request:
+    branches: [ "main" ] # Запускать при пулл-реквесте в ветку 'main'
+
+# Разрешить GitHub Actions читать содержимое репозитория и деплоить на GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Используем последнюю версию Ubuntu
+
+    steps:
+    - name: Checkout your repository
+      uses: actions/checkout@v4 # Скачиваем ваш репозиторий
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v5 # Настраиваем окружение для GitHub Pages
+
+    - name: Build the site in the jekyll/builder container
+      run: |
+        # Запускаем контейнер Jekyll для сборки сайта
+        # Убедитесь, что ваш Jekyll-сайт находится в корне репозитория,
+        # и что _site - это целевая папка для сборки
+        docker run \
+        -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
+        jekyll/builder:latest /bin/bash -c "chmod -R 777 /srv/jekyll && jekyll build --future"
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3 # Загружаем собранный сайт как артефакт
+      with:
+        path: './_site' # Путь к собранному сайту (папка _site)
+
+  deploy:
+    environment:
+      name: github-pages # Окружение для деплоя на GitHub Pages
+      url: ${{ steps.deployment.outputs.page_url }} # URL деплоя
+    runs-on: ubuntu-latest
+    needs: build # Этот job зависит от успешного завершения job 'build'
+
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4 # Запускаем деплой на GitHub Pages
